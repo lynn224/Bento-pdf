@@ -15,7 +15,7 @@ jobs:
           ROOT_DIR=$(dirname "$(find temp_dir -name 'package.json' | head -n 1)")
           mv "$ROOT_DIR" project_folder
           
-      - name: Injeksi package.json (Bypass TypeScript Check)
+      - name: Injeksi package.json
         shell: bash
         run: |
           cat << 'EOF' > project_folder/package.json
@@ -121,10 +121,7 @@ jobs:
         run: |
           cd project_folder
           npm install
-          
-          # HACK: Buka kunci file pdfium.wasm yang disembunyikan oleh pustaka @embedpdf
           node -e "const fs=require('fs'); const p='node_modules/@embedpdf/pdfium/package.json'; if(fs.existsSync(p)){ const d=JSON.parse(fs.readFileSync(p)); delete d.exports; fs.writeFileSync(p, JSON.stringify(d)); }" || true
-
           export NODE_OPTIONS="--max-old-space-size=4096"
           npm run electron:build:win
 
@@ -132,4 +129,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: BentoPDF-Offline-Installer
-          path: project_folder/release/*.eproject_folder/release/*.exe
+          path: project_folder/release/*.exe
