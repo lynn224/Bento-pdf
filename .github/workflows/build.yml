@@ -8,11 +8,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Ekstrak File ZIP
+      - name: Ekstrak File ZIP dengan Aman
         shell: bash
         run: |
-          unzip -q *.zip -d project_folder
-          mv project_folder/*/* project_folder/ 2>/dev/null || true
+          unzip -q *.zip -d temp_dir
+          # Mencari lokasi asli folder proyek dan memindahkannya secara utuh
+          ROOT_DIR=$(dirname "$(find temp_dir -name 'package.json' | head -n 1)")
+          mv "$ROOT_DIR" project_folder
           
       - name: Injeksi package.json Bawaan Asli
         shell: bash
